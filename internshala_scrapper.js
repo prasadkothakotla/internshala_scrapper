@@ -17,6 +17,8 @@ app.post('/scrape', async (req,res)=>{
         role: role,
         company: "Demo Company",
         location: "Remote",
+        stipend: '3000-5000k',
+        url: "internshala.com",
         updated: new Date()
     });
 
