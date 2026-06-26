@@ -1,0 +1,24 @@
+const express = require('express');
+const app = express();
+
+app.use(express.json());
+
+app.post('/scrape', async (req,res)=>{
+
+    const role = req.body.role;
+
+    console.log("Searching:", role);
+
+    // temporary response
+    res.json({
+        role: role,
+        company: "Demo Company",
+        location: "Remote",
+        updated: new Date()
+    });
+
+});
+
+app.listen(3000,()=>{
+    console.log("Server running on port 3000");
+});
