@@ -1,18 +1,16 @@
 {
   "name": "automation",
   "version": "1.0.0",
-  "description": "",
   "main": "internshala_scrapper.js",
-  "scripts": {},
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "@playwright/test": "^1.61.1",
-    "@types/node": "^26.0.1"
+  "scripts": {
+    "start": "node internshala_scrapper.js"
   },
   "dependencies": {
     "express": "^5.2.1",
     "playwright": "^1.61.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.61.1",
+    "@types/node": "^26.0.1"
   }
 }
