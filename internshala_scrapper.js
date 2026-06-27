@@ -29,12 +29,13 @@ app.post('/scrape', async (req, res) => {
             .toLowerCase();
 
         const url =
-            `https://internshala.com/jobs/${searchRole}-jobs`;
+            `https://internshala.com/internships/keywords-${searchRole}`;
 
         console.log('Searching:', url);
 
         browser = await chromium.launch({
-            headless: true
+            headless: true,
+            args: ['--no-sandbox']
         });
 
         const page = await browser.newPage();
@@ -44,76 +45,106 @@ app.post('/scrape', async (req, res) => {
             timeout: 60000
         });
 
-        // Wait for page content
         await page.waitForTimeout(5000);
 
-        const jobs = await page.evaluate((requestedRole) => {
+        const internships = await page.evaluate(() => {
 
             const data = [];
 
-            const cards = document.querySelectorAll(
-                '.individual_internship'
+            // Keywords considered relevant
+            const aiKeywords = [
+                'ai',
+                'artificial intelligence',
+                'machine learning',
+                'ml',
+                'genai',
+                'llm',
+                'rag',
+                'prompt',
+                'deep learning',
+                'neural',
+                'data science',
+                'data analytics',
+                'agentic',
+                'automation'
+            ];
+
+            const cards =
+                document.querySelectorAll(
+                    '.individual_internship'
+                );
+
+            console.log(
+                'Cards found:',
+                cards.length
             );
 
             cards.forEach(card => {
 
-                const jobTitle =
+                const title =
                     card.querySelector(
                         '.job-title-href'
                     )?.innerText?.trim() || '';
 
-                // keep only matching jobs
-                if (
-                    jobTitle
-                        .toLowerCase()
-                        .includes(
-                            requestedRole.toLowerCase()
-                        )
-                ) {
+                const lowerTitle =
+                    title.toLowerCase();
 
-                    data.push({
+                const isRelevant =
+                    aiKeywords.some(
+                        keyword =>
+                            lowerTitle.includes(keyword)
+                    );
 
-                        role: jobTitle,
-
-                        company:
-                            card.querySelector(
-                                '.company-name'
-                            )?.innerText?.trim() || '',
-
-                        location:
-                            card.querySelector(
-                                '.locations'
-                            )?.innerText?.trim() || '',
-
-                        stipend:
-                            card.querySelector(
-                                '.stipend'
-                            )?.innerText?.trim() || '',
-
-                        url:
-                            card.querySelector(
-                                'a'
-                            )?.href || '',
-
-                        updated:
-                            new Date()
-                                .toISOString()
-
-                    });
+                if (!isRelevant) {
+                    return;
                 }
+
+                const company =
+                    card.querySelector(
+                        '.company-name'
+                    )?.innerText?.trim() || '';
+
+                const location =
+                    card.querySelector(
+                        '.locations'
+                    )?.innerText?.trim() || '';
+
+                const stipend =
+                    card.querySelector(
+                        '.stipend'
+                    )?.innerText?.trim() || '';
+
+                const internshipUrl =
+                    card.querySelector(
+                        'a'
+                    )?.href || '';
+
+                data.push({
+
+                    role: title,
+                    company,
+                    location,
+                    stipend,
+                    url: internshipUrl,
+                    updated:
+                        new Date()
+                            .toISOString()
+
+                });
+
             });
 
             return data;
 
-        }, role);
+        });
 
         await browser.close();
 
         console.log(
-            `Found ${jobs.length} matching jobs`
+            `Found ${internships.length} AI internships`
         );
 
-        res.json(jobs);
+        res.json(internships);
 
     }
     catch (err) {
@@ -133,5 +164,7 @@ app.post('/scrape', async (req, res) => {
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Server running on ${PORT}`);
+    console.log(
+        `Server running on ${PORT}`
+    );
 });
