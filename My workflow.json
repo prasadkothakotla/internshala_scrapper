@@ -1,0 +1,352 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1iHV3qaJ-NiRbU7TPzV2AGH21P-rzxURKvdnwCfbBBhk",
+          "mode": "list",
+          "cachedResultName": "Job role",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1iHV3qaJ-NiRbU7TPzV2AGH21P-rzxURKvdnwCfbBBhk/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1iHV3qaJ-NiRbU7TPzV2AGH21P-rzxURKvdnwCfbBBhk/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        64,
+        -64
+      ],
+      "id": "cba492d2-89bd-434f-b837-328525bb3282",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "KXEL1QiSIX0VGe4I",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 2
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -384,
+        -64
+      ],
+      "id": "75d13eba-1707-472f-af6f-13e83c97ece0",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://internshalascrapper-production.up.railway.app/scrape",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "role",
+              "value": "={{ $json['Job role '] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        288,
+        -64
+      ],
+      "id": "1373304a-085d-4642-9426-48e8619da1b4",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1ZU3A_ZpHpq7R0bsKFdDNIsU4_rf17uZNbQzYcVBA49Y",
+          "mode": "list",
+          "cachedResultName": "Job Details",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ZU3A_ZpHpq7R0bsKFdDNIsU4_rf17uZNbQzYcVBA49Y/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ZU3A_ZpHpq7R0bsKFdDNIsU4_rf17uZNbQzYcVBA49Y/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Company": "={{ $json.company }}",
+            "Location": "={{ $json.location }}",
+            "posted": "={{ $json.updated }}",
+            "Stipend": "={{ $json.stipend }}",
+            "url": "={{ $json.url }}",
+            "Posted": "={{ $json.updated }}",
+            "Internship": "={{ $json.role }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Internship",
+              "displayName": "Internship",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Company",
+              "displayName": "Company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Location",
+              "displayName": "Location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Stipend",
+              "displayName": "Stipend",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "posted",
+              "displayName": "posted",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "url",
+              "displayName": "url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Posted",
+              "displayName": "Posted",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        736,
+        -64
+      ],
+      "id": "23ce3fa4-36c8-46ee-aeca-2efa12e4ee29",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "KXEL1QiSIX0VGe4I",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Pull all internships already in the sheet\nconst existingRows = $('Get rows in sheet').all();\nconst existingUrls = new Set(existingRows.map(r => r.json.url));\n\n// HTTP Request returns an array — get it regardless of how it's shaped\nconst scraped = $input.first().json; // adjust if your HTTP node already splits into items\nconst list = Array.isArray(scraped) ? scraped : items.map(i => i.json);\n\n// Keep only internships whose URL is NOT already in the sheet\nconst newOnes = list.filter(job => job.url && !existingUrls.has(job.url));\n\nreturn newOnes.map(job => ({ json: job }));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        512,
+        -64
+      ],
+      "id": "a2840e19-db23-4572-8f0b-0175ef18e752",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "chatId": "1772457286",
+        "text": "=🚀 New AI Internship Found!\n💼 Role: {{ $json.Internship }}  \n🏢 Company: {{ $json.Company }} \n📍 Location: {{$json.Location}}  \n💰 Stipend: {{$json.Stipend}}  \n🔗 Apply: {{$json.url}}  \n⏰ Posted: {{$json.posted}}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        960,
+        -64
+      ],
+      "id": "7c755a5b-1d92-4ab9-af84-b27905374a51",
+      "name": "Send a text message",
+      "webhookId": "2a4e10c0-5e41-4a06-90b1-0201b079b868",
+      "notesInFlow": false,
+      "credentials": {
+        "telegramApi": {
+          "id": "4FGSPpRWeF6tienX",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1ZU3A_ZpHpq7R0bsKFdDNIsU4_rf17uZNbQzYcVBA49Y",
+          "mode": "list",
+          "cachedResultName": "Job Details",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ZU3A_ZpHpq7R0bsKFdDNIsU4_rf17uZNbQzYcVBA49Y/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ZU3A_ZpHpq7R0bsKFdDNIsU4_rf17uZNbQzYcVBA49Y/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -160,
+        -64
+      ],
+      "id": "dee47422-3468-41de-bc57-09af682a0ad2",
+      "name": "Get row(s) in sheet1",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "KXEL1QiSIX0VGe4I",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet1": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "1d3aab9a-baf7-429b-89fc-14d136191d1e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "81ea566660f69345e5164dc6357a3694407b1a0bf716551eae4d76472277ef44"
+  },
+  "nodeGroups": [],
+  "id": "IhOU66qWluRi0ib4",
+  "tags": []
+}
